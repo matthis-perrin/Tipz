@@ -14,6 +14,8 @@ class MainViewController: UIViewController {
     @IBOutlet weak var billAmountField: UITextField!
     // Format and display the content of billAmountField
     @IBOutlet weak var billAmountLabel: UILabel!
+    // Segmented control where the user choose the tip they want to pay
+    @IBOutlet weak var tipControl: UISegmentedControl!
 
     private var currencyFormatter: NSNumberFormatter!
 
@@ -27,12 +29,23 @@ class MainViewController: UIViewController {
 
         billAmountField.text = ""
         billAmountLabel.text = ""
+        updateTipValues([10, 15, 18, 20], selectedIndex: 1)
         recompute()
 
         // On load the bill amount textfield will grab the focus and automatically open the keyboard
         billAmountField.becomeFirstResponder()
     }
 
+    // Update the tip segmented controll with the values in params
+    internal func updateTipValues(tipValues: [Int], selectedIndex: Int) {
+        tipControl.removeAllSegments()
+        for (segmentIndex, tipValue) in tipValues.enumerate() {
+            tipControl.insertSegmentWithTitle("\(tipValue)%", atIndex: segmentIndex, animated: false)
+        }
+        tipControl.selectedSegmentIndex = selectedIndex
+    }
+
+    // Recompute the UI
     private func recompute() {
         // Parse the content of the hidden bill amount textfield and display it
         // using the bill amount label

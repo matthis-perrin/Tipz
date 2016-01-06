@@ -31,7 +31,7 @@
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" id="ct8-bX-Cjo">
                                 <rect key="frame" x="0.0" y="64" width="320" height="180"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="textColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="150"/>
@@ -47,6 +47,16 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="xWr-V1-Ijk">
+                                <rect key="frame" x="32" y="252" width="258" height="29"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="10%"/>
+                                    <segment title="15%"/>
+                                    <segment title="18%"/>
+                                    <segment title="20%"/>
+                                </segments>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -56,6 +66,7 @@
                     <connections>
                         <outlet property="billAmountField" destination="ct8-bX-Cjo" id="nNm-5T-8Uq"/>
                         <outlet property="billAmountLabel" destination="EAd-na-8eq" id="pRp-GQ-sg6"/>
+                        <outlet property="tipControl" destination="xWr-V1-Ijk" id="uKH-38-uet"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wRr-zR-Pjm" userLabel="First Responder" sceneMemberID="firstResponder"/>
