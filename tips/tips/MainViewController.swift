@@ -64,4 +64,9 @@ class MainViewController: UIViewController {
     }
 
 
+    // Called when the user tap on the view
+    @IBAction func onViewTap(sender: AnyObject) {
+        view.endEditing(true) // Close any opened keyboard
+    }
+
 }
