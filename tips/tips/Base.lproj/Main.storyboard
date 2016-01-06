@@ -278,9 +278,7 @@
                             <outletCollection property="gestureRecognizers" destination="Xc0-li-QpG" appends="YES" id="rTm-Fd-ny4"/>
                         </connections>
                     </view>
-                    <navigationItem key="navigationItem" title="Tipz" id="dsC-Rg-aT8">
-                        <barButtonItem key="rightBarButtonItem" title="Settings" id="1ik-rT-wNB"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Tipz" id="dsC-Rg-aT8"/>
                     <connections>
                         <outlet property="billAmountField" destination="ct8-bX-Cjo" id="nNm-5T-8Uq"/>
                         <outlet property="billAmountLabel" destination="EAd-na-8eq" id="pRp-GQ-sg6"/>

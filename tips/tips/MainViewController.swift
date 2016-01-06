@@ -47,6 +47,7 @@ class MainViewController: UIViewController {
     @IBOutlet weak var roundTotalUpTotalLabel: UILabel!
 
     private var currencyFormatter: NSNumberFormatter!
+    private var userPreferences = UserPreferences()
 
     
     override func viewDidLoad() {
@@ -64,9 +65,22 @@ class MainViewController: UIViewController {
             tipView.layer.shadowOpacity = 0.85
         }
 
-        billAmountField.text = ""
-        billAmountLabel.text = ""
-        updateTipValues([10, 15, 18, 20], selectedIndex: 1)
+        // Set the last bill amount from the preferences
+        billAmountField.text = String(userPreferences.lastBillAmount)
+        billAmountLabel.text = "" // Will be computed later
+
+        // Set the tip segmented control data form the preferences
+        let tipPercents = userPreferences.tipPercents // List of available tip percents
+        var currentTipIndex = 0 // By default select the first one
+        for (index, tipPercent) in tipPercents.enumerate() {
+            // If the last tip percent is in the list, we use that
+            if tipPercent == userPreferences.lastTipPercent {
+                currentTipIndex = index
+            }
+        }
+        updateTipValues(tipPercents, selectedIndex: currentTipIndex)
+
+        // Recompute the UI
         recompute()
 
         // On load the bill amount textfield will grab the focus and automatically open the keyboard
@@ -74,10 +88,10 @@ class MainViewController: UIViewController {
     }
 
     // Update the tip segmented controll with the values in params
-    internal func updateTipValues(tipValues: [Int], selectedIndex: Int) {
+    internal func updateTipValues(tipValues: [Double], selectedIndex: Int) {
         tipControl.removeAllSegments()
         for (segmentIndex, tipValue) in tipValues.enumerate() {
-            tipControl.insertSegmentWithTitle("\(tipValue)%", atIndex: segmentIndex, animated: false)
+            tipControl.insertSegmentWithTitle(String(format: "%.0f%%", tipValue * 100), atIndex: segmentIndex, animated: false)
         }
         tipControl.selectedSegmentIndex = selectedIndex
     }
@@ -87,6 +101,7 @@ class MainViewController: UIViewController {
         // Parse the content of the hidden bill amount textfield
         if let billAmountFieldText = billAmountField.text {
             let billAmount = (billAmountFieldText as NSString).doubleValue
+            userPreferences.lastBillAmount = billAmount
 
             // Update the bill amount label with the formatted value
             if let billAmountFormatted = currencyFormatter.stringFromNumber(billAmount) {
@@ -104,6 +119,7 @@ class MainViewController: UIViewController {
                 if let tipPercentText = tipControl.titleForSegmentAtIndex(tipControl.selectedSegmentIndex) {
                     // Calculate the different version of the tip percentage
                     let tipPercent = (tipPercentText.substringToIndex(tipPercentText.endIndex.predecessor()) as NSString).doubleValue / 100
+                    userPreferences.lastTipPercent = tipPercent
                     let tipPercent_TipRoundDown = floor(tipPercent * billAmount) / billAmount
                     let tipPercent_TipRoundUp = ceil(tipPercent * billAmount) / billAmount
                     let tipPercent_TotalRoundDown = (floor(billAmount + tipPercent * billAmount) / billAmount) - 1
