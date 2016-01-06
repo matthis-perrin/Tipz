@@ -17,15 +17,52 @@ class MainViewController: UIViewController {
     // Segmented control where the user choose the tip they want to pay
     @IBOutlet weak var tipControl: UISegmentedControl!
 
+    // 5 views at the bottom displaying different tip adjustments
+    @IBOutlet weak var mainTipView: UIView!
+    @IBOutlet weak var roundTipDownView: UIView!
+    @IBOutlet weak var roundTipUpView: UIView!
+    @IBOutlet weak var roundTotalDownView: UIView!
+    @IBOutlet weak var roundTotalUpView: UIView!
+    private var allTipViews: [UIView!]!
+
+    // Percent labels of the 5 tip views
+    @IBOutlet weak var mainTipPercentLabel: UILabel!
+    @IBOutlet weak var roundTipDownPercentLabel: UILabel!
+    @IBOutlet weak var roundTipUpPercentLabel: UILabel!
+    @IBOutlet weak var roundTotalDownPercentLabel: UILabel!
+    @IBOutlet weak var roundTotalUpPercentLabel: UILabel!
+
+    // Tip labels of the 5 tip views
+    @IBOutlet weak var mainTipTipLabel: UILabel!
+    @IBOutlet weak var roundTipDownTipLabel: UILabel!
+    @IBOutlet weak var roundTipUpTipLabel: UILabel!
+    @IBOutlet weak var roundTotalDownTipLabel: UILabel!
+    @IBOutlet weak var roundTotalUpTipLabel: UILabel!
+
+    // Total labels of the 5 tip views
+    @IBOutlet weak var mainTipTotalLabel: UILabel!
+    @IBOutlet weak var roundTipDownTotalLabel: UILabel!
+    @IBOutlet weak var roundTipUpTotalLabel: UILabel!
+    @IBOutlet weak var roundTotalDownTotalLabel: UILabel!
+    @IBOutlet weak var roundTotalUpTotalLabel: UILabel!
+
     private var currencyFormatter: NSNumberFormatter!
 
     
     override func viewDidLoad() {
+
+        super.viewDidLoad()
+
         // Initialise the currency formatter
         currencyFormatter = NSNumberFormatter()
         currencyFormatter.numberStyle = .CurrencyStyle
 
-        super.viewDidLoad()
+        allTipViews = [mainTipView, roundTipDownView, roundTipUpView, roundTotalDownView, roundTotalUpView]
+        for tipView in allTipViews {
+            tipView.layer.shadowOffset = CGSizeMake(0, 1)
+            tipView.layer.shadowRadius = 1
+            tipView.layer.shadowOpacity = 0.85
+        }
 
         billAmountField.text = ""
         billAmountLabel.text = ""
@@ -47,19 +84,63 @@ class MainViewController: UIViewController {
 
     // Recompute the UI
     private func recompute() {
-        // Parse the content of the hidden bill amount textfield and display it
-        // using the bill amount label
+        // Parse the content of the hidden bill amount textfield
         if let billAmountFieldText = billAmountField.text {
             let billAmount = (billAmountFieldText as NSString).doubleValue
+
+            // Update the bill amount label with the formatted value
             if let billAmountFormatted = currencyFormatter.stringFromNumber(billAmount) {
                 billAmountLabel.text = billAmountFormatted
             } else {
                 billAmountLabel.text = ""
             }
+
+            if billAmount > 0 {
+                // Show the tip views
+                for tipView in allTipViews {
+                    tipView.hidden = false
+                }
+                // Get the selected tip percentage
+                if let tipPercentText = tipControl.titleForSegmentAtIndex(tipControl.selectedSegmentIndex) {
+                    // Calculate the different version of the tip percentage
+                    let tipPercent = (tipPercentText.substringToIndex(tipPercentText.endIndex.predecessor()) as NSString).doubleValue / 100
+                    let tipPercent_TipRoundDown = floor(tipPercent * billAmount) / billAmount
+                    let tipPercent_TipRoundUp = ceil(tipPercent * billAmount) / billAmount
+                    let tipPercent_TotalRoundDown = (floor(billAmount + tipPercent * billAmount) / billAmount) - 1
+                    let tipPercent_TotalRoundUp = (ceil(billAmount + tipPercent * billAmount) / billAmount) - 1
+
+                    // Update the tip view labels
+                    mainTipPercentLabel.text = String(format: "%.2f%%", tipPercent * 100)
+                    roundTipDownPercentLabel.text = String(format: "%.2f%%", tipPercent_TipRoundDown * 100)
+                    roundTipUpPercentLabel.text = String(format: "%.2f%%", tipPercent_TipRoundUp * 100)
+                    roundTotalDownPercentLabel.text = String(format: "%.2f%%", tipPercent_TotalRoundDown * 100)
+                    roundTotalUpPercentLabel.text = String(format: "%.2f%%", tipPercent_TotalRoundUp * 100)
+
+                    mainTipTipLabel.text = currencyFormatter.stringFromNumber(tipPercent * billAmount)
+                    roundTipDownTipLabel.text = currencyFormatter.stringFromNumber(tipPercent_TipRoundDown * billAmount)
+                    roundTipUpTipLabel.text = currencyFormatter.stringFromNumber(tipPercent_TipRoundUp * billAmount)
+                    roundTotalDownTipLabel.text = currencyFormatter.stringFromNumber(tipPercent_TotalRoundDown * billAmount)
+                    roundTotalUpTipLabel.text = currencyFormatter.stringFromNumber(tipPercent_TotalRoundUp * billAmount)
+
+                    mainTipTotalLabel.text = currencyFormatter.stringFromNumber(billAmount + tipPercent * billAmount)
+                    roundTipDownTotalLabel.text = currencyFormatter.stringFromNumber(billAmount + tipPercent_TipRoundDown * billAmount)
+                    roundTipUpTotalLabel.text = currencyFormatter.stringFromNumber(billAmount + tipPercent_TipRoundUp * billAmount)
+                    roundTotalDownTotalLabel.text = currencyFormatter.stringFromNumber(billAmount + tipPercent_TotalRoundDown * billAmount)
+                    roundTotalUpTotalLabel.text = currencyFormatter.stringFromNumber(billAmount + tipPercent_TotalRoundUp * billAmount)
+                }
+            } else {
+                // Hide the tip views
+                for tipView in allTipViews {
+                    tipView.hidden = true
+                }
+            }
         }
     }
 
     @IBAction func billAmountFieldEditingChanged(sender: AnyObject) {
+        recompute()
+    }
+    @IBAction func tipControlValueChanged(sender: AnyObject) {
         recompute()
     }
 
