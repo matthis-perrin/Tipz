@@ -66,7 +66,7 @@ class MainViewController: UIViewController {
         }
 
         // Set the last bill amount from the preferences
-        billAmountField.text = String(userPreferences.lastBillAmount)
+        billAmountField.text = userPreferences.lastBillAmount > 0 ? String(userPreferences.lastBillAmount) : ""
         billAmountLabel.text = "" // Will be computed later
 
         // Set the tip segmented control data form the preferences
