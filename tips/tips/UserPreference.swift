@@ -46,7 +46,7 @@ class UserPreferences: NSObject {
     }
     var tipPercents: [Double] {
         didSet {
-            defaults.setObject(tipPercents, forKey: defaultKeys.LAST_TIP_PERCENT)
+            defaults.setObject(tipPercents, forKey: defaultKeys.TIP_PERCENTS)
         }
     }
 

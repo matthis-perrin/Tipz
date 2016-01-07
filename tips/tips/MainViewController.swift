@@ -47,11 +47,9 @@ class MainViewController: UIViewController {
     @IBOutlet weak var roundTotalUpTotalLabel: UILabel!
 
     private var currencyFormatter: NSNumberFormatter!
-    private var userPreferences = UserPreferences()
 
     
     override func viewDidLoad() {
-
         super.viewDidLoad()
 
         // Initialise the currency formatter
@@ -64,6 +62,15 @@ class MainViewController: UIViewController {
             tipView.layer.shadowRadius = 1
             tipView.layer.shadowOpacity = 0.85
         }
+    }
+
+    override func viewWillAppear(animated: Bool) {
+        loadUserPreferences()
+    }
+
+    // Update the UI with the user preferences
+    internal func loadUserPreferences() {
+        let userPreferences = UserPreferences()
 
         // Set the last bill amount from the preferences
         billAmountField.text = userPreferences.lastBillAmount > 0 ? String(userPreferences.lastBillAmount) : ""
@@ -100,6 +107,7 @@ class MainViewController: UIViewController {
     private func recompute() {
         // Parse the content of the hidden bill amount textfield
         if let billAmountFieldText = billAmountField.text {
+            let userPreferences = UserPreferences()
             let billAmount = (billAmountFieldText as NSString).doubleValue
             userPreferences.lastBillAmount = billAmount
 
